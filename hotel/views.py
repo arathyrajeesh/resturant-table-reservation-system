@@ -53,17 +53,14 @@ def home(request):
     tables = Table.objects.all()
     today = timezone.localdate()
 
-    # Tables reserved today
     reserved_ids = Reservation.objects.filter(
         date=today,
         status__in=['Pending', 'Confirmed']
     ).values_list('table_id', flat=True)
 
-    # Attach a helper flag to each table
     for table in tables:
         table.is_reserved_today = table.id in reserved_ids
 
-    # User's own reservations (past and upcoming)
     user_reservations = Reservation.objects.filter(
         user=request.user
     ).order_by('-date', '-time')
@@ -80,7 +77,6 @@ def admin_dashboard(request):
     tables = Table.objects.all()
     reservations = Reservation.objects.select_related('user', 'table').order_by('-date', '-time')
 
-    # Add Table (existing functionality)
     if request.method == 'POST' and request.POST.get('action') == 'add_table':
         number = request.POST.get('number')
         capacity = request.POST.get('capacity')
@@ -93,7 +89,6 @@ def admin_dashboard(request):
             messages.success(request, f"Table {number} added successfully!")
         return redirect('admin_dashboard')
 
-    # Manage Reservations (Confirm / Cancel)
     if request.method == 'POST' and request.POST.get('action') == 'update_reservation':
         reservation_id = request.POST.get('reservation_id')
         new_status = request.POST.get('status')
@@ -132,7 +127,6 @@ def book_table(request):
 def cancel_reservation(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id, user=request.user)
 
-    # Allow cancellation only for pending or confirmed reservations
     if reservation.status in ['Pending', 'Confirmed']:
         reservation.status = 'Cancelled'
         reservation.save()

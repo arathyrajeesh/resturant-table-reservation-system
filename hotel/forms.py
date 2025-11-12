@@ -25,7 +25,6 @@ class ReservationForm(forms.ModelForm):
         if table and guests and guests > table.capacity:
             raise forms.ValidationError(f"Table {table.number} can seat up to {table.capacity} guests.")
 
-        # Prevent double booking (extra guard even with unique_together)
         if table and date and time:
             exists = Reservation.objects.filter(table=table, date=date, time=time, status__in=['Pending', 'Confirmed']).exists()
             if exists:
