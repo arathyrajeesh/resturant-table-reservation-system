@@ -26,15 +26,18 @@ SECRET_KEY = 'django-insecure-4_3s_futf!q1!n-q6z(rz-z%4#^)fni4wztgtqam_-fw7c5jm&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# settings.py
+
 ALLOWED_HOSTS = [
-    "web-production-c707d.up.railway.app",  # your new domain
     "localhost",
     "127.0.0.1",
+    ".up.railway.app",  # ✅ allows all Railway subdomains
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.up.railway.app",
+    "https://*.up.railway.app",  # ✅ wildcard support for all Railway subdomains
 ]
+
 # Application definition
 
 INSTALLED_APPS = [
